@@ -1,0 +1,14 @@
+{
+  "name": "WoodenPuzzle",
+  "version": "0.0.0",
+  "description": "js implementation of a wooden puzzle",
+  "license": "MIT",
+  "homepage": "http://agea.github.io/WoodenPuzzle",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ]
+}
