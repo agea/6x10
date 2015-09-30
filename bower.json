@@ -10,5 +10,10 @@
     "bower_components",
     "test",
     "tests"
-  ]
+  ],
+  "dependencies": {
+    "raphael": "~2.1.4",
+    "lodash": "~3.10.1",
+    "Keypress": "~2.1.3"
+  }
 }
