@@ -5,6 +5,7 @@ html {
   overflow: hidden;
   height: 100%;
   width: 100%;
+  background: #C6A63D;
 }
 
 #wrap {
@@ -12,6 +13,7 @@ html {
 }
 
 svg {
+  background: #D2C187;
   height: 100%;
   width: 100%;
 }

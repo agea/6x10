@@ -13,15 +13,19 @@ $(document).ready(function () {
 
   function onResize() {
     var wratio = $window.width() / $window.height();
-    $wrap.css({'margin-top':0});
+    $wrap.css({
+      'margin-top': 0
+    });
     if (wratio >= ratio) {
       $wrap.width($window.height() * ratio);
       $wrap.height($window.height());
     } else {
       $wrap.width($window.width());
       $wrap.height($window.width() / ratio);
-      var margin = ($window.height()-$wrap.height())/2+'px';
-      $wrap.css({'margin-top':margin});
+      var margin = ($window.height() - $wrap.height()) / 2 + 'px';
+      $wrap.css({
+        'margin-top': margin
+      });
 
     }
   }
@@ -36,8 +40,7 @@ $(document).ready(function () {
 
   rect.transform("T70,70");
   rect.attr("fill", "#ffffff");
-  rect.attr("stroke", "#000000");
-  rect.attr("stroke-width", "1");
+  rect.attr("stroke-width", "0");
 
 
   var blocks = [];
@@ -75,29 +78,48 @@ $(document).ready(function () {
 
   function resetBlocks() {
     _.each(blocks, function (block) {
-      block.attr("stroke", "#ff9000");
-      block.attr("fill", "#dddddd");
-      block.attr("stroke-width", "0.1");
-      block.mousedown(function(){
-        select(blocks.indexOf(block));
-      });
-      block.drag(function onmove(){
-      },function onstart(){
-        select(blocks.indexOf(block));
-      },function onend(){
-
-      });
+      block.attr("stroke", "#D2C187");
+      block.attr("fill", "#AE5D0B");
+      block.attr("stroke-width", "0.25");
     });
   }
 
+  _.each(blocks, function (block) {
+
+    block.mousedown(function () {
+      select(blocks.indexOf(block));
+    });
+
+    block.drag(function (dx, dy) {
+      var scale = this.paper._vbSize || (1 / this.paper._viewBoxShift.scale); // real browsers || IE8
+
+      // this.dx and this.dy are undefined the first pass, thus not reducing the dx/dy values
+      var deltaX = ((dx - this.dx) * scale || 0);
+      var deltaY = ((dy - this.dy) * scale || 0);
+
+      console.log(dx*scale + "," + dy*scale);
+
+      this.transform(this.dt + "T" + parseInt(dx*scale/10)*10 + "," + parseInt(dy*scale/10)*10);
+
+      // Store the values for the next iteration so we can recalculate correctly as the drag continues
+      this.dx = dx;
+      this.dy = dy;
+    }, function () {
+      this.dt = this.transform();
+    }, function () {
+      this.dx = undefined;
+      this.dy = undefined;
+    })
+  });
 
   var selected = blocks[0];
 
   function select(i) {
     resetBlocks();
-    blocks[i].attr("fill", "#ff9000");
+    blocks[i].attr("fill", "#FF9000");
     blocks[i].attr("stroke-width", "0");
     selected = blocks[i];
+    selected.toFront();
   }
 
   resetPositions();
@@ -118,7 +140,7 @@ $(document).ready(function () {
     }
 
     element.animate({
-      transform: element.transform() + transform
+      transform: "..." + transform
     }, 80, 'easeOut');
   }, 100);
 
