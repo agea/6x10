@@ -48,8 +48,8 @@ $(document).ready(function () {
   blocks.push(paper.path('M0,0V40H10V20H20V10H10V0H0'));
   blocks.push(paper.path('M0,0V30H30V20H10V0H0'));
   blocks.push(paper.path('M0,0V20H30V0H20V10H10V0H0'));
-  blocks.push(paper.path('M0,10V30H10V20H20V10H30V0H10V10H0'));
   blocks.push(paper.path('M0,0V10H50V0H0'));
+  blocks.push(paper.path('M0,10V30H10V20H20V10H30V0H10V10H0'));
   blocks.push(paper.path('M0,0V40H20V30H10V0H0'));
   blocks.push(paper.path('M0,0V10H10V20H40V10H20V0H0'));
   blocks.push(paper.path('M0,10V20H10V30H20V20H30V10H20V0H10V10H0'));
