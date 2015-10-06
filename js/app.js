@@ -3,7 +3,7 @@ $(document).ready(function () {
 
   var paper = Raphael("wrap");
 
-  var w = 220;
+  var w = 200;
   var h = 270;
   var ratio = w / h;
 
@@ -48,15 +48,15 @@ $(document).ready(function () {
   blocks.push(paper.path('M0,0V40H10V20H20V10H10V0H0'));
   blocks.push(paper.path('M0,0V30H30V20H10V0H0'));
   blocks.push(paper.path('M0,0V20H30V0H20V10H10V0H0'));
-  blocks.push(paper.path('M0,0V20H10V30H20V20H30V10H10V0H0'));
-  blocks.push(paper.path('M0,0V40H20V30H10V0H0'));
   blocks.push(paper.path('M0,10V30H10V20H20V10H30V0H10V10H0'));
+  blocks.push(paper.path('M0,0V10H50V0H0'));
+  blocks.push(paper.path('M0,0V40H20V30H10V0H0'));
   blocks.push(paper.path('M0,0V10H10V20H40V10H20V0H0'));
   blocks.push(paper.path('M0,10V20H10V30H20V20H30V10H20V0H10V10H0'));
   blocks.push(paper.path('M0,0V20H20V30H30V10H10V0H0'));
   blocks.push(paper.path('M0,0V20H10V30H20V0H0'));
   blocks.push(paper.path('M0,0V10H10V30H20V10H30V0H0'));
-  blocks.push(paper.path('M0,0V10H50V0H0'));
+  blocks.push(paper.path('M0,0V20H10V30H20V20H30V10H10V0H0'));
 
   function resetPositions() {
     blocks[0].transform("T10,10");
@@ -76,14 +76,6 @@ $(document).ready(function () {
   }
 
 
-  function resetBlocks() {
-    _.each(blocks, function (block) {
-      block.attr("stroke", "#D2C187");
-      block.attr("fill", "#AE5D0B");
-      block.attr("stroke-width", "0.25");
-    });
-  }
-
   _.each(blocks, function (block) {
 
     block.mousedown(function () {
@@ -91,17 +83,16 @@ $(document).ready(function () {
     });
 
     block.drag(function (dx, dy) {
-      var scale = this.paper._vbSize || (1 / this.paper._viewBoxShift.scale); // real browsers || IE8
+      var scale = this.paper._vbSize || (1 / this.paper._viewBoxShift.scale);
 
-      // this.dx and this.dy are undefined the first pass, thus not reducing the dx/dy values
       var deltaX = ((dx - this.dx) * scale || 0);
       var deltaY = ((dy - this.dy) * scale || 0);
 
-      console.log(dx*scale + "," + dy*scale);
 
-      this.transform(this.dt + "T" + parseInt(dx*scale/10)*10 + "," + parseInt(dy*scale/10)*10);
+      transform("T" + parseInt(dx * scale / 10) * 10 + "," + parseInt(dy * scale / 10) * 10,
+        this,
+        this.dt);
 
-      // Store the values for the next iteration so we can recalculate correctly as the drag continues
       this.dx = dx;
       this.dy = dy;
     }, function () {
@@ -112,10 +103,13 @@ $(document).ready(function () {
     })
   });
 
-  var selected = blocks[0];
 
   function select(i) {
-    resetBlocks();
+    _.each(blocks, function (block) {
+      block.attr("stroke", "#D2C187");
+      block.attr("fill", "#AE5D0B");
+      block.attr("stroke-width", "0.25");
+    });
     blocks[i].attr("fill", "#FF9000");
     blocks[i].attr("stroke-width", "0");
     selected = blocks[i];
@@ -123,10 +117,9 @@ $(document).ready(function () {
   }
 
   resetPositions();
-  resetBlocks();
   select(0);
 
-  var transform = _.throttle(function (transform, element) {
+  var transform = _.throttle(function (transform, element, origin) {
     element = element || selected;
 
 
@@ -140,7 +133,7 @@ $(document).ready(function () {
     }
 
     element.animate({
-      transform: "..." + transform
+      transform: (origin || "...") + transform
     }, 80, 'easeOut');
   }, 100);
 
