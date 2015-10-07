@@ -7,6 +7,7 @@ $(document).ready(function () {
   var h = 270;
   var ratio = w / h;
 
+  var speed = 50;
 
   var $wrap = $('#wrap');
   var $window = $(window);
@@ -43,6 +44,18 @@ $(document).ready(function () {
   rect.attr("stroke-width", "0");
 
 
+  paper.path(icons.rotateCW).attr('fill', '#000000').transform("T73,183");
+  paper.circle(85, 195, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(rotateCW);
+
+  paper.path(icons.rotateCCW).attr('fill', '#000000').transform("T103,183");
+  paper.circle(115, 195, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(rotateCCW);
+
+  paper.path(icons.flipW).attr('fill', '#000000').transform("T73,223");
+  paper.circle(85, 225, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(flipV);
+
+  paper.path(icons.flipH).attr('fill', '#000000').transform("T103,223");
+  paper.circle(115, 225, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(flipH);
+
   var blocks = [];
 
   blocks.push(paper.path('M0,0V40H10V20H20V10H10V0H0'));
@@ -50,9 +63,9 @@ $(document).ready(function () {
   blocks.push(paper.path('M0,0V20H30V0H20V10H10V0H0'));
   blocks.push(paper.path('M0,0V10H50V0H0'));
   blocks.push(paper.path('M0,10V30H10V20H20V10H30V0H10V10H0'));
-  blocks.push(paper.path('M0,0V40H20V30H10V0H0'));
   blocks.push(paper.path('M0,0V10H10V20H40V10H20V0H0'));
   blocks.push(paper.path('M0,10V20H10V30H20V20H30V10H20V0H10V10H0'));
+  blocks.push(paper.path('M0,0V40H20V30H10V0H0'));
   blocks.push(paper.path('M0,0V20H20V30H30V10H10V0H0'));
   blocks.push(paper.path('M0,0V20H10V30H20V0H0'));
   blocks.push(paper.path('M0,0V10H10V30H20V10H30V0H0'));
@@ -134,8 +147,8 @@ $(document).ready(function () {
 
     element.animate({
       transform: (origin || "...") + transform
-    }, 80, 'easeOut');
-  }, 100);
+    }, speed * .8, 'easeOut');
+  }, speed);
 
   kbd.simple_combo("w", function () {
     //select previous block
@@ -147,22 +160,29 @@ $(document).ready(function () {
     select((blocks.indexOf(selected) + blocks.length - 1) % blocks.length)
   });
 
-  kbd.simple_combo("a", function () {
-    var bb = selected.getBBox();
-    transform("R-90," + bb.cx + "," + bb.cy);
-  });
+  function rotateCW() {
+    transform("R-90");
+  }
 
-  kbd.simple_combo("s", function () {
+  kbd.simple_combo("a", rotateCW);
+
+  function rotateCCW() {
     transform("R90");
-  });
+  }
 
-  kbd.simple_combo("z", function () {
+  kbd.simple_combo("s", rotateCCW);
+
+  function flipV() {
     transform("S1,-1");
-  });
+  }
 
-  kbd.simple_combo("x", function () {
+  kbd.simple_combo("z", flipV);
+
+  function flipH() {
     transform("S-1,1");
-  });
+  }
+
+  kbd.simple_combo("x", flipH);
 
   kbd.simple_combo("up", function () {
     transform("T0,-10");
