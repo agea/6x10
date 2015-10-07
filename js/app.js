@@ -12,14 +12,12 @@ $(document).ready(function () {
   var $wrap = $('#wrap');
   var $window = $(window);
 
-  var pattern = Trianglify({
+  $('#bg').html(Trianglify({
     height: 3000,
     width: 3000,
     x_colors: 'YlOrBr',
-    cell_size: 30 + Math.random() * 300
-  });
-
-  $('#bg').html(pattern.canvas());
+    cell_size: 100 + Math.random() * 100
+  }).canvas());
 
   function onResize() {
     var wratio = $window.width() / $window.height();
@@ -46,11 +44,14 @@ $(document).ready(function () {
 
   paper.setViewBox(0, 0, w, h);
 
-  var rect = paper.rect(0, 0, 60, 100);
-
-  rect.transform("T70,70");
-  rect.attr("fill", "#ffffff");
-  rect.attr("stroke-width", "0");
+  var rect = paper.rect(0, 0, 60, 100)
+    .transform("T70,70")
+    .attr("fill", "#ffffff")
+    .attr("stroke-width", "0")
+    .glow({
+      color: '#ee963d',
+      width: 24
+    });
 
   paper.path(icons.help)
     .attr('stroke-width', '0')
@@ -58,6 +59,7 @@ $(document).ready(function () {
     .transform("T179,-3S0.75,0.75");
 
   paper.circle(191, 9, 7)
+    .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
     .click(function () {
@@ -67,17 +69,19 @@ $(document).ready(function () {
   $.get('README.md', function (data) {
     $('.modal-body')
       .html(new commonmark.HtmlRenderer()
-            .render(new commonmark.Parser()
-                    .parse(data)
-                   )
-           );
+        .render(new commonmark.Parser()
+          .parse(data)
+        )
+      );
   })
 
   paper.path(icons.rotateCW)
     .attr('fill', '#000000')
-    .transform("T73,183");
+    .transform("T73,183")
+  ;
 
   paper.circle(85, 195, 14)
+    .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
     .click(rotateCW);
@@ -87,6 +91,7 @@ $(document).ready(function () {
     .transform("T103,183");
 
   paper.circle(115, 195, 14)
+    .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
     .click(rotateCCW);
@@ -96,6 +101,7 @@ $(document).ready(function () {
     .transform("T73,223");
 
   paper.circle(85, 225, 14)
+    .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
     .click(flipV);
@@ -105,6 +111,7 @@ $(document).ready(function () {
     .transform("T103,223");
 
   paper.circle(115, 225, 14)
+    .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
     .click(flipH);
@@ -143,7 +150,7 @@ $(document).ready(function () {
 
 
   _.each(blocks, function (block) {
-
+    block.attr('cursor', 'pointer');
     block.mousedown(function () {
       select(blocks.indexOf(block));
     });
