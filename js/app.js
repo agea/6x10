@@ -4,13 +4,22 @@ $(document).ready(function () {
   var paper = Raphael("wrap");
 
   var w = 200;
-  var h = 270;
+  var h = 250;
   var ratio = w / h;
 
   var speed = 50;
 
   var $wrap = $('#wrap');
   var $window = $(window);
+
+  var pattern = Trianglify({
+    height: 3000,
+    width: 3000,
+    x_colors: 'YlOrBr',
+    cell_size: 30 + Math.random() * 300
+  });
+
+  $('#bg').html(pattern.canvas());
 
   function onResize() {
     var wratio = $window.width() / $window.height();
@@ -43,6 +52,26 @@ $(document).ready(function () {
   rect.attr("fill", "#ffffff");
   rect.attr("stroke-width", "0");
 
+  paper.path(icons.help)
+    .attr('stroke-width', '0')
+    .attr('fill', '#ffffff')
+    .transform("T179,-3S0.75,0.75");
+
+  paper.circle(191, 9, 7)
+    .attr('stroke-width', '0')
+    .attr('fill', 'rgba(255,255,255,0)')
+    .click(function () {
+      $('#myModal').modal('toggle');
+    });
+
+  $.get('README.md', function (data) {
+    $('.modal-body')
+      .html(new commonmark.HtmlRenderer()
+            .render(new commonmark.Parser()
+                    .parse(data)
+                   )
+           );
+  })
 
   paper.path(icons.rotateCW)
     .attr('fill', '#000000')

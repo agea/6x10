@@ -13,8 +13,19 @@ html {
   position: relative;
 }
 
-svg {
-  background: rgba(210, 193, 135, 0.6);
+#bg{
+  position: fixed;
+  height: 100%;
+  width: 100%;
+}
+
+#bg canvas{
+  height: 100%;
+  width: 100%;
+}
+
+#wrap svg {
+  background: rgba(255, 255, 255, 0.33);
   height: 100%;
   width: 100%;
 }
