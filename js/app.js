@@ -50,7 +50,7 @@ $(document).ready(function () {
   paper.path(icons.rotateCCW).attr('fill', '#000000').transform("T103,183");
   paper.circle(115, 195, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(rotateCCW);
 
-  paper.path(icons.flipW).attr('fill', '#000000').transform("T73,223");
+  paper.path(icons.flipV).attr('fill', '#000000').transform("T73,223");
   paper.circle(85, 225, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(flipV);
 
   paper.path(icons.flipH).attr('fill', '#000000').transform("T103,223");
