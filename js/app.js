@@ -211,10 +211,10 @@ $(document).ready(function () {
 
     element.animate({
       transform: (origin || "...") + transform
-    }, speed * .8, 'easeOut',function(){
+    }, speed, 'easeOut',function(){
       element.moving = false;
     });
-  }, speed);
+  }, speed*.6);
 
   kbd.simple_combo("w", function () {
     //select previous block
