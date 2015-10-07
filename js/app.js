@@ -194,7 +194,11 @@ $(document).ready(function () {
 
   var transform = _.throttle(function (transform, element, origin) {
     element = element || selected;
+    if (element.moving){
+      return;
+    }
 
+    element.moving = true;
 
     if (transform.indexOf("R") == 0) {
       var bb = element.getBBox();
@@ -207,7 +211,9 @@ $(document).ready(function () {
 
     element.animate({
       transform: (origin || "...") + transform
-    }, speed * .8, 'easeOut');
+    }, speed * .8, 'easeOut',function(){
+      element.moving = false;
+    });
   }, speed);
 
   kbd.simple_combo("w", function () {
