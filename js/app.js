@@ -44,17 +44,41 @@ $(document).ready(function () {
   rect.attr("stroke-width", "0");
 
 
-  paper.path(icons.rotateCW).attr('fill', '#000000').transform("T73,183");
-  paper.circle(85, 195, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(rotateCW);
+  paper.path(icons.rotateCW)
+    .attr('fill', '#000000')
+    .transform("T73,183");
 
-  paper.path(icons.rotateCCW).attr('fill', '#000000').transform("T103,183");
-  paper.circle(115, 195, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(rotateCCW);
+  paper.circle(85, 195, 14)
+    .attr('stroke-width', '0')
+    .attr('fill', 'rgba(255,255,255,0)')
+    .click(rotateCW);
 
-  paper.path(icons.flipV).attr('fill', '#000000').transform("T73,223");
-  paper.circle(85, 225, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(flipV);
+  paper.path(icons.rotateCCW)
+    .attr('fill', '#000000')
+    .transform("T103,183");
 
-  paper.path(icons.flipH).attr('fill', '#000000').transform("T103,223");
-  paper.circle(115, 225, 14).attr('stroke-width', '0').attr('fill', 'rgba(255,255,255,0)').click(flipH);
+  paper.circle(115, 195, 14)
+    .attr('stroke-width', '0')
+    .attr('fill', 'rgba(255,255,255,0)')
+    .click(rotateCCW);
+
+  paper.path(icons.flipV)
+    .attr('fill', '#000000')
+    .transform("T73,223");
+
+  paper.circle(85, 225, 14)
+    .attr('stroke-width', '0')
+    .attr('fill', 'rgba(255,255,255,0)')
+    .click(flipV);
+
+  paper.path(icons.flipH)
+    .attr('fill', '#000000')
+    .transform("T103,223");
+
+  paper.circle(115, 225, 14)
+    .attr('stroke-width', '0')
+    .attr('fill', 'rgba(255,255,255,0)')
+    .click(flipH);
 
   var blocks = [];
 
@@ -161,24 +185,34 @@ $(document).ready(function () {
   });
 
   function rotateCW() {
-    transform("R-90");
+    if (selected.flipped) {
+      transform("R90");
+    } else {
+      transform("R-90");
+    }
   }
 
   kbd.simple_combo("a", rotateCW);
 
   function rotateCCW() {
-    transform("R90");
+    if (selected.flipped) {
+      transform("R-90");
+    } else {
+      transform("R90");
+    }
   }
 
   kbd.simple_combo("s", rotateCCW);
 
   function flipV() {
+    selected.flipped = !selected.flipped;
     transform("S1,-1");
   }
 
   kbd.simple_combo("z", flipV);
 
   function flipH() {
+    selected.flipped = !selected.flipped;
     transform("S-1,1");
   }
 
