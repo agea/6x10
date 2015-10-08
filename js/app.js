@@ -88,7 +88,7 @@ $(document).ready(function () {
     });
 
   $.get('README.md', function (data) {
-    $('.solved-body')
+    $('.about-body')
       .html(new commonmark.HtmlRenderer()
         .render(new commonmark.Parser()
           .parse(data)
