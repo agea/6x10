@@ -1,16 +1,24 @@
 $(document).ready(function () {
-  var kbd = new window.keypress.Listener();
-
-  var paper = Raphael("wrap");
 
   var w = 200;
   var h = 250;
   var ratio = w / h;
-
   var speed = 50;
+
+  var kbd = new window.keypress.Listener();
+
+  var paper = Raphael("wrap");
+
+  paper.setViewBox(0, 0, w, h);
 
   var $wrap = $('#wrap');
   var $window = $(window);
+
+  var offset = {
+    top: 0,
+    left: 0
+  };
+
 
   $('#bg').html(Trianglify({
     height: 3000,
@@ -27,12 +35,15 @@ $(document).ready(function () {
     if (wratio >= ratio) {
       $wrap.width($window.height() * ratio);
       $wrap.height($window.height());
+      offset.top = 0;
+      offset.left = ($window.width() - $wrap.width()) / 2;
     } else {
       $wrap.width($window.width());
       $wrap.height($window.width() / ratio);
-      var margin = ($window.height() - $wrap.height()) / 2 + 'px';
+      offset.left = 0;
+      offset.top = ($window.height() - $wrap.height()) / 2;
       $wrap.css({
-        'margin-top': margin
+        'margin-top': offset.top + 'px'
       });
 
     }
@@ -42,7 +53,17 @@ $(document).ready(function () {
 
   $(window).resize(onResize);
 
-  paper.setViewBox(0, 0, w, h);
+  function getScale() {
+    return paper._vbSize || (1 / paper._viewBoxShift.scale);
+  }
+
+  function vBox2Window(x, y) {
+    var scale = getScale();
+    return {
+      x: offset.left + x / scale,
+      y: offset.top + y / scale
+    };
+  }
 
   var rect = paper.rect(0, 0, 60, 100)
     .transform("T70,70")
@@ -67,7 +88,7 @@ $(document).ready(function () {
     });
 
   $.get('README.md', function (data) {
-    $('.modal-body')
+    $('.solved-body')
       .html(new commonmark.HtmlRenderer()
         .render(new commonmark.Parser()
           .parse(data)
@@ -77,8 +98,7 @@ $(document).ready(function () {
 
   paper.path(icons.rotateCW)
     .attr('fill', '#000000')
-    .transform("T73,183")
-  ;
+    .transform("T73,183");
 
   paper.circle(85, 195, 14)
     .attr('cursor', 'pointer')
@@ -148,53 +168,9 @@ $(document).ready(function () {
     blocks[11].transform("T160,210");
   }
 
-
-  _.each(blocks, function (block) {
-    block.attr('cursor', 'pointer');
-    block.mousedown(function () {
-      select(blocks.indexOf(block));
-    });
-
-    block.drag(function (dx, dy) {
-      var scale = this.paper._vbSize || (1 / this.paper._viewBoxShift.scale);
-
-      var deltaX = ((dx - this.dx) * scale || 0);
-      var deltaY = ((dy - this.dy) * scale || 0);
-
-
-      transform("T" + parseInt(dx * scale / 10) * 10 + "," + parseInt(dy * scale / 10) * 10,
-        this,
-        this.dt);
-
-      this.dx = dx;
-      this.dy = dy;
-    }, function () {
-      this.dt = this.transform();
-    }, function () {
-      this.dx = undefined;
-      this.dy = undefined;
-    })
-  });
-
-
-  function select(i) {
-    _.each(blocks, function (block) {
-      block.attr("stroke", "#D2C187");
-      block.attr("fill", "#AE5D0B");
-      block.attr("stroke-width", "0.25");
-    });
-    blocks[i].attr("fill", "#FF9000");
-    blocks[i].attr("stroke-width", "0");
-    selected = blocks[i];
-    selected.toFront();
-  }
-
-  resetPositions();
-  select(0);
-
   var transform = _.throttle(function (transform, element, origin) {
     element = element || selected;
-    if (element.moving){
+    if (element.moving) {
       return;
     }
 
@@ -211,10 +187,107 @@ $(document).ready(function () {
 
     element.animate({
       transform: (origin || "...") + transform
-    }, speed, 'easeOut',function(){
+    }, speed, 'easeOut', function () {
       element.moving = false;
+      checkSolved();
     });
-  }, speed*.6);
+  }, speed * .6);
+
+  function checkSolved() {
+    var bb = rect.getBBox();
+    var scale = getScale();
+    var cover = 0;
+
+    for (var i = 0; i < 6; i++) {
+      for (var j = 0; j < 10; j++) {
+        var point = vBox2Window(bb.x + i * 10 + 5, bb.y + j * 10 + 5);
+        var element = paper.getElementByPoint(point.x, point.y);
+        if (blocks.indexOf(element) != -1) {
+          cover++;
+        }
+      }
+    }
+    if (cover==60){
+
+    }
+  }
+
+  function rotateCW() {
+    selected.rotated = !selected.rotated;
+    if (selected.flipped) {
+      transform("R90");
+    } else {
+      transform("R-90");
+    }
+  }
+
+  function rotateCCW() {
+    selected.rotated = !selected.rotated;
+    if (selected.flipped) {
+      transform("R-90");
+    } else {
+      transform("R90");
+    }
+  }
+
+  function flipV() {
+    selected.flipped = !selected.flipped;
+    if (!selected.rotated) {
+      transform("S1,-1");
+    } else {
+      transform("S-1,1");
+    }
+  }
+
+  function flipH() {
+    selected.flipped = !selected.flipped;
+    if (selected.rotated) {
+      transform("S1,-1");
+    } else {
+      transform("S-1,1");
+    }
+  }
+
+  _.each(blocks, function (block) {
+    block.attr('cursor', 'pointer');
+    block.mousedown(function () {
+      select(blocks.indexOf(block));
+    });
+
+    block.drag(function (dx, dy) {
+      var scale = getScale();
+
+      var deltaX = ((dx - this.dx) * scale || 0);
+      var deltaY = ((dy - this.dy) * scale || 0);
+
+      transform("T" + parseInt(dx * scale / 10) * 10 + "," + parseInt(dy * scale / 10) * 10,
+        this,
+        this.dt);
+
+      this.dx = dx;
+      this.dy = dy;
+    }, function () {
+      this.dt = this.transform();
+    }, function () {
+      this.dx = undefined;
+      this.dy = undefined;
+    })
+  });
+
+  function select(i) {
+    _.each(blocks, function (block) {
+      block.attr("stroke", "#D2C187");
+      block.attr("fill", "#AE5D0B");
+      block.attr("stroke-width", "0.25");
+    });
+    blocks[i].attr("fill", "#FF9000");
+    blocks[i].attr("stroke-width", "0");
+    selected = blocks[i];
+    selected.toFront();
+  }
+
+  resetPositions();
+  select(0);
 
   kbd.simple_combo("w", function () {
     //select previous block
@@ -226,38 +299,9 @@ $(document).ready(function () {
     select((blocks.indexOf(selected) + blocks.length - 1) % blocks.length)
   });
 
-  function rotateCW() {
-    if (selected.flipped) {
-      transform("R90");
-    } else {
-      transform("R-90");
-    }
-  }
-
   kbd.simple_combo("a", rotateCW);
-
-  function rotateCCW() {
-    if (selected.flipped) {
-      transform("R-90");
-    } else {
-      transform("R90");
-    }
-  }
-
   kbd.simple_combo("s", rotateCCW);
-
-  function flipV() {
-    selected.flipped = !selected.flipped;
-    transform("S1,-1");
-  }
-
   kbd.simple_combo("z", flipV);
-
-  function flipH() {
-    selected.flipped = !selected.flipped;
-    transform("S-1,1");
-  }
-
   kbd.simple_combo("x", flipH);
 
   kbd.simple_combo("up", function () {
