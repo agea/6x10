@@ -189,7 +189,21 @@ $(document).ready(function () {
       transform: (origin || "...") + transform
     }, speed, 'easeOut', function () {
       element.moving = false;
+      var bb = element.getBBox();
+      if (bb.x<0){
+        element.transform('...T' + (-bb.x) + ",0");
+      }
+      if (bb.x2>w){
+        element.transform('...T' + (w-bb.x2) + ",0");
+      }
+      if (bb.y<0){
+        element.transform('...T0,' + (-bb.y));
+      }
+      if (bb.y2>h){
+        element.transform('...T0,' + (h-bb.y2));
+      }
       checkSolved();
+
     });
   }, speed * .6);
 
