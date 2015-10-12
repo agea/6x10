@@ -176,13 +176,18 @@ $(document).ready(function () {
 
     element.moving = true;
 
-    if (transform.indexOf("R") == 0) {
+    var bi = blocks.indexOf(selected);
+
+    if (transform.indexOf("R") === 0 && (bi === 2 || bi === 9)) {
       var bb = element.getBBox();
-      var ot = element.transform();
-      element.transform(ot + transform);
-      var bb2 = element.getBBox();
-      transform = transform + "T" + (bb.x - bb2.x) + "," + (bb.y - bb2.y);
-      element.transform(ot);
+      var x = Math.round(bb.cx/5)*5;
+      var y = Math.round(bb.cy/5)*5;
+      if (selected.rotated){
+        x-=5;
+      } else {
+        x+=5;
+      }
+      transform+=","+x+","+y;
     }
 
     element.animate({
@@ -202,6 +207,11 @@ $(document).ready(function () {
       if (bb.y2>h){
         element.transform('...T0,' + (h-bb.y2));
       }
+      bb = element.getBBox();
+      var x = Math.round(bb.x/10)*10;
+      var y = Math.round(bb.y/10)*10;
+      element.transform("...T" + (x-bb.x) + "," + (y-bb.y));
+
       checkSolved();
 
     });
@@ -268,21 +278,23 @@ $(document).ready(function () {
       select(blocks.indexOf(block));
     });
 
-    block.drag(function (dx, dy) {
+    block.drag(function onDrag(dx, dy) {
       var scale = getScale();
 
       var deltaX = ((dx - this.dx) * scale || 0);
       var deltaY = ((dy - this.dy) * scale || 0);
 
-      transform("T" + parseInt(dx * scale / 10) * 10 + "," + parseInt(dy * scale / 10) * 10,
-        this,
-        this.dt);
+      this.transform("...T" + deltaX + "," + deltaY);
 
       this.dx = dx;
       this.dy = dy;
-    }, function () {
+    }, function dragStart() {
       this.dt = this.transform();
-    }, function () {
+    }, function dragEnd() {
+      var bb = this.getBBox();
+      var x = Math.round(bb.x/10)*10;
+      var y = Math.round(bb.y/10)*10;
+      transform("T" + (x - bb.x) +"," + (y - bb.y));
       this.dx = undefined;
       this.dy = undefined;
     })
