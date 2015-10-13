@@ -1,7 +1,7 @@
 $(document).ready(function () {
 
-  var w = 200;
-  var h = 250;
+  var w = 240;
+  var h = 140;
   var ratio = w / h;
   var speed = 50;
 
@@ -65,8 +65,13 @@ $(document).ready(function () {
     };
   }
 
-  var rect = paper.rect(0, 0, 60, 100)
-    .transform("T70,70")
+  var rw = 100;
+  var rh = 60;
+  var rtx = (w-rw)/2;
+  var rty = (h-rh)/2  +10
+
+  var rect = paper.rect(0, 0, rw, rh)
+    .transform("T"+rtx+","+rty)
     .attr("fill", "#ffffff")
     .attr("stroke-width", "0")
     .glow({
@@ -77,9 +82,9 @@ $(document).ready(function () {
   paper.path(icons.help)
     .attr('stroke-width', '0')
     .attr('fill', '#ffffff')
-    .transform("T179,-3S0.75,0.75");
+    .transform("T"+(w-21)+",-3S0.75,0.75");
 
-  paper.circle(191, 9, 7)
+  paper.circle(w-9, 9, 7)
     .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
@@ -98,9 +103,9 @@ $(document).ready(function () {
 
   paper.path(icons.rotateCW)
     .attr('fill', '#000000')
-    .transform("T73,183");
+    .transform("T"+(rtx)+"," + (rty+rh+3));
 
-  paper.circle(85, 195, 14)
+  paper.circle(rtx+12, rty+rh+15, 12)
     .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
@@ -108,9 +113,9 @@ $(document).ready(function () {
 
   paper.path(icons.rotateCCW)
     .attr('fill', '#000000')
-    .transform("T103,183");
+    .transform("T"+(rtx+25)+","+(rty+rh+3));
 
-  paper.circle(115, 195, 14)
+  paper.circle(rtx+37, rty+rh+15, 12)
     .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
@@ -118,9 +123,9 @@ $(document).ready(function () {
 
   paper.path(icons.flipV)
     .attr('fill', '#000000')
-    .transform("T73,223");
+    .transform("T"+(rtx+50)+","+(rty+rh+3));
 
-  paper.circle(85, 225, 14)
+  paper.circle(rtx+62, rty+rh+15, 12)
     .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
@@ -128,9 +133,9 @@ $(document).ready(function () {
 
   paper.path(icons.flipH)
     .attr('fill', '#000000')
-    .transform("T103,223");
+    .transform("T"+(rtx+75)+","+(rty+rh+3));
 
-  paper.circle(115, 225, 14)
+  paper.circle(rtx+87, rty+rh+15, 12)
     .attr('cursor', 'pointer')
     .attr('stroke-width', '0')
     .attr('fill', 'rgba(255,255,255,0)')
@@ -152,20 +157,18 @@ $(document).ready(function () {
   blocks.push(paper.path('M0,0V20H10V30H20V20H30V10H10V0H0'));
 
   function resetPositions() {
-    blocks[0].transform("T10,10");
-    blocks[1].transform("T10,60");
-    blocks[2].transform("T10,110");
-    blocks[3].transform("T10,160");
-    blocks[4].transform("T10,210");
-
-    blocks[5].transform("T60,10");
-    blocks[6].transform("T110,10");
-    blocks[7].transform("T160,10");
-
-    blocks[8].transform("T160,60");
-    blocks[9].transform("T160,110");
-    blocks[10].transform("T160,160");
-    blocks[11].transform("T160,210");
+    blocks[0].transform("T50,10");
+    blocks[1].transform("T200,10");
+    blocks[2].transform("T200,50");
+    blocks[3].transform("T180,120");
+    blocks[4].transform("T190,80");
+    blocks[5].transform("T20,50");
+    blocks[6].transform("T80,10");
+    blocks[7].transform("T170,10R180");
+    blocks[8].transform("T130,10");
+    blocks[9].transform("T10,100");
+    blocks[10].transform("T30,80");
+    blocks[11].transform("T10,10");
   }
 
   var transform = _.throttle(function (transform, element, origin) {
