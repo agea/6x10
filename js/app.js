@@ -54,7 +54,7 @@ $(document).ready(function () {
   $(window).resize(onResize);
 
   function getScale() {
-    return paper._vbSize || (1 / paper._viewBoxShift.scale);
+    return w/$wrap.width();
   }
 
   function vBox2Window(x, y) {
@@ -225,8 +225,8 @@ $(document).ready(function () {
     var scale = getScale();
     var cover = 0;
 
-    for (var i = 0; i < 6; i++) {
-      for (var j = 0; j < 10; j++) {
+    for (var i = 0; i < 10; i++) {
+      for (var j = 0; j < 6; j++) {
         var point = vBox2Window(bb.x + i * 10 + 5, bb.y + j * 10 + 5);
         var element = paper.getElementByPoint(point.x, point.y);
         if (blocks.indexOf(element) != -1) {
@@ -235,7 +235,7 @@ $(document).ready(function () {
       }
     }
     if (cover==60){
-
+        $('#solvedModal').modal('show');
     }
   }
 
